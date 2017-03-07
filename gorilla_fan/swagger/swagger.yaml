@@ -1,0 +1,305 @@
+consumes:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+definitions:
+  FanPayload:
+    example:
+      status: false
+    properties:
+      status:
+        description: Status of the Fan
+        example: false
+        type: boolean
+    title: FanPayload
+    type: object
+  GorillaFan:
+    description: A Fan (default view)
+    example:
+      href: Quos animi optio enim.
+      id: 6.91692e+18
+      status: true
+    properties:
+      href:
+        description: API href for making requests on the fan
+        example: Quos animi optio enim.
+        type: string
+      id:
+        description: Unique Fan ID
+        example: 6.91692e+18
+        format: int64
+        type: integer
+      status:
+        description: Current Status of Fan
+        example: true
+        type: boolean
+    required:
+    - id
+    - href
+    - status
+    title: 'Mediatype identifier: application/vnd.gorilla.fan+json; view=default'
+    type: object
+  GorillaFanCollection:
+    description: GorillaFanCollection is the media type for an array of GorillaFan
+      (default view)
+    example:
+    - href: Quos animi optio enim.
+      id: 6.91692e+18
+      status: true
+    - href: Quos animi optio enim.
+      id: 6.91692e+18
+      status: true
+    - href: Quos animi optio enim.
+      id: 6.91692e+18
+      status: true
+    items:
+      $ref: '#/definitions/GorillaFan'
+    title: 'Mediatype identifier: application/vnd.gorilla.fan+json; type=collection;
+      view=default'
+    type: array
+  GorillaThermo:
+    description: A Fan (default view)
+    example:
+      href: Aut consequatur dolores dolor inventore cumque.
+      id: 3.0514675e+18
+      temperature: 0.61288506
+    properties:
+      href:
+        description: API href for making requests on the Thermo
+        example: Aut consequatur dolores dolor inventore cumque.
+        type: string
+      id:
+        description: Unique Thermometer ID
+        example: 3.0514675e+18
+        format: int64
+        type: integer
+      temperature:
+        description: Current Temperature of Thermo
+        example: 0.61288506
+        format: double
+        type: number
+    required:
+    - id
+    - href
+    - temperature
+    title: 'Mediatype identifier: application/vnd.gorilla.thermo+json; view=default'
+    type: object
+  GorillaThermoCollection:
+    description: GorillaThermoCollection is the media type for an array of GorillaThermo
+      (default view)
+    example:
+    - href: Aut consequatur dolores dolor inventore cumque.
+      id: 3.0514675e+18
+      temperature: 0.61288506
+    items:
+      $ref: '#/definitions/GorillaThermo'
+    title: 'Mediatype identifier: application/vnd.gorilla.thermo+json; type=collection;
+      view=default'
+    type: array
+  ThermoPayload:
+    example:
+      maxtemp: 0.18427207
+      mintemp: 0.52757984
+    properties:
+      maxtemp:
+        description: Maximum Temperature
+        example: 0.18427207
+        format: double
+        type: number
+      mintemp:
+        description: Minimum Temperature
+        example: 0.52757984
+        format: double
+        type: number
+    title: ThermoPayload
+    type: object
+  error:
+    description: Error response media type (default view)
+    example:
+      code: invalid_value
+      detail: Value of ID must be an integer
+      id: 3F1FKVRR
+      meta:
+        timestamp: 1.458609e+09
+      status: "400"
+    properties:
+      code:
+        description: an application-specific error code, expressed as a string value.
+        example: invalid_value
+        type: string
+      detail:
+        description: a human-readable explanation specific to this occurrence of the
+          problem.
+        example: Value of ID must be an integer
+        type: string
+      id:
+        description: a unique identifier for this particular occurrence of the problem.
+        example: 3F1FKVRR
+        type: string
+      meta:
+        additionalProperties: true
+        description: a meta object containing non-standard meta-information about
+          the error.
+        example:
+          timestamp: 1.458609e+09
+        type: object
+      status:
+        description: the HTTP status code applicable to this problem, expressed as
+          a string value.
+        example: "400"
+        type: string
+    title: 'Mediatype identifier: application/vnd.goa.error; view=default'
+    type: object
+host: localhost:9090
+info:
+  description: API to manage IoT Fan prototypw
+  title: Gorilla IoT Fan
+  version: ""
+paths:
+  /fans:
+    get:
+      description: Get a list of Fans
+      operationId: fan#list
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GorillaFanCollection'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: list fan
+      tags:
+      - fan
+  /fans/{fanID}:
+    get:
+      description: Get fan by id
+      operationId: fan#show
+      parameters:
+      - description: FanID
+        in: path
+        name: fanID
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GorillaFan'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: show fan
+      tags:
+      - fan
+    put:
+      description: Turn off or on
+      operationId: fan#turn
+      parameters:
+      - in: path
+        name: fanID
+        required: true
+        type: string
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/FanPayload'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GorillaFan'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+      schemes:
+      - http
+      summary: turn fan
+      tags:
+      - fan
+  /thermo:
+    get:
+      description: Get a list of thermos
+      operationId: thermo#list
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GorillaThermoCollection'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: list thermo
+      tags:
+      - thermo
+  /thermo/{thermoID}:
+    get:
+      description: Get thermo by id
+      operationId: thermo#show
+      parameters:
+      - in: path
+        name: thermoID
+        required: true
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GorillaThermo'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: show thermo
+      tags:
+      - thermo
+    put:
+      description: Set Minimal threshold
+      operationId: thermo#setlimits
+      parameters:
+      - in: path
+        name: thermoID
+        required: true
+        type: string
+      - in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/ThermoPayload'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/GorillaThermo'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/error'
+        "404":
+          description: Not Found
+      schemes:
+      - http
+      summary: setlimits thermo
+      tags:
+      - thermo
+produces:
+- application/json
+- application/xml
+- application/gob
+- application/x-gob
+responses:
+  NotFound:
+    description: Not Found
+  OK:
+    description: OK
+    schema:
+      $ref: '#/definitions/GorillaFan'
+schemes:
+- http
+swagger: "2.0"
