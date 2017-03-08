@@ -2,7 +2,7 @@
 // $ goagen
 // --design=gorilla_fan/design
 // --out=$(GOPATH)/src/gorilla_fan
-// --version=v1.1.0-dirty
+// --version=v1.0.0
 //
 // API "gorilla_fan": Application Controllers
 //
@@ -12,6 +12,7 @@ package app
 
 import (
 	"github.com/goadesign/goa"
+	"github.com/goadesign/goa/cors"
 	"golang.org/x/net/context"
 	"net/http"
 )
@@ -43,6 +44,8 @@ type FanController interface {
 func MountFanController(service *goa.Service, ctrl FanController) {
 	initService(service)
 	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/fans", ctrl.MuxHandler("preflight", handleFanOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/fans/:fanID", ctrl.MuxHandler("preflight", handleFanOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -56,6 +59,7 @@ func MountFanController(service *goa.Service, ctrl FanController) {
 		}
 		return ctrl.List(rctx)
 	}
+	h = handleFanOrigin(h)
 	service.Mux.Handle("GET", "/fans", ctrl.MuxHandler("List", h, nil))
 	service.LogInfo("mount", "ctrl", "Fan", "action", "List", "route", "GET /fans")
 
@@ -71,6 +75,7 @@ func MountFanController(service *goa.Service, ctrl FanController) {
 		}
 		return ctrl.Show(rctx)
 	}
+	h = handleFanOrigin(h)
 	service.Mux.Handle("GET", "/fans/:fanID", ctrl.MuxHandler("Show", h, nil))
 	service.LogInfo("mount", "ctrl", "Fan", "action", "Show", "route", "GET /fans/:fanID")
 
@@ -92,8 +97,34 @@ func MountFanController(service *goa.Service, ctrl FanController) {
 		}
 		return ctrl.Turn(rctx)
 	}
+	h = handleFanOrigin(h)
 	service.Mux.Handle("PUT", "/fans/:fanID", ctrl.MuxHandler("Turn", h, unmarshalTurnFanPayload))
 	service.LogInfo("mount", "ctrl", "Fan", "action", "Turn", "route", "PUT /fans/:fanID")
+}
+
+// handleFanOrigin applies the CORS response headers corresponding to the origin.
+func handleFanOrigin(h goa.Handler) goa.Handler {
+
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		origin := req.Header.Get("Origin")
+		if origin == "" {
+			// Not a CORS request
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "*") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Access-Control-Max-Age", "600")
+			rw.Header().Set("Access-Control-Allow-Credentials", "false")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
+			}
+			return h(ctx, rw, req)
+		}
+
+		return h(ctx, rw, req)
+	}
 }
 
 // unmarshalTurnFanPayload unmarshals the request body into the context request data Payload field.
@@ -118,6 +149,8 @@ type ThermoController interface {
 func MountThermoController(service *goa.Service, ctrl ThermoController) {
 	initService(service)
 	var h goa.Handler
+	service.Mux.Handle("OPTIONS", "/thermo", ctrl.MuxHandler("preflight", handleThermoOrigin(cors.HandlePreflight()), nil))
+	service.Mux.Handle("OPTIONS", "/thermo/:thermoID", ctrl.MuxHandler("preflight", handleThermoOrigin(cors.HandlePreflight()), nil))
 
 	h = func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
 		// Check if there was an error loading the request
@@ -131,6 +164,7 @@ func MountThermoController(service *goa.Service, ctrl ThermoController) {
 		}
 		return ctrl.List(rctx)
 	}
+	h = handleThermoOrigin(h)
 	service.Mux.Handle("GET", "/thermo", ctrl.MuxHandler("List", h, nil))
 	service.LogInfo("mount", "ctrl", "Thermo", "action", "List", "route", "GET /thermo")
 
@@ -152,6 +186,7 @@ func MountThermoController(service *goa.Service, ctrl ThermoController) {
 		}
 		return ctrl.Setlimits(rctx)
 	}
+	h = handleThermoOrigin(h)
 	service.Mux.Handle("PUT", "/thermo/:thermoID", ctrl.MuxHandler("Setlimits", h, unmarshalSetlimitsThermoPayload))
 	service.LogInfo("mount", "ctrl", "Thermo", "action", "Setlimits", "route", "PUT /thermo/:thermoID")
 
@@ -167,8 +202,34 @@ func MountThermoController(service *goa.Service, ctrl ThermoController) {
 		}
 		return ctrl.Show(rctx)
 	}
+	h = handleThermoOrigin(h)
 	service.Mux.Handle("GET", "/thermo/:thermoID", ctrl.MuxHandler("Show", h, nil))
 	service.LogInfo("mount", "ctrl", "Thermo", "action", "Show", "route", "GET /thermo/:thermoID")
+}
+
+// handleThermoOrigin applies the CORS response headers corresponding to the origin.
+func handleThermoOrigin(h goa.Handler) goa.Handler {
+
+	return func(ctx context.Context, rw http.ResponseWriter, req *http.Request) error {
+		origin := req.Header.Get("Origin")
+		if origin == "" {
+			// Not a CORS request
+			return h(ctx, rw, req)
+		}
+		if cors.MatchOrigin(origin, "*") {
+			ctx = goa.WithLogContext(ctx, "origin", origin)
+			rw.Header().Set("Access-Control-Allow-Origin", origin)
+			rw.Header().Set("Access-Control-Max-Age", "600")
+			rw.Header().Set("Access-Control-Allow-Credentials", "false")
+			if acrm := req.Header.Get("Access-Control-Request-Method"); acrm != "" {
+				// We are handling a preflight request
+				rw.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE")
+			}
+			return h(ctx, rw, req)
+		}
+
+		return h(ctx, rw, req)
+	}
 }
 
 // unmarshalSetlimitsThermoPayload unmarshals the request body into the context request data Payload field.
