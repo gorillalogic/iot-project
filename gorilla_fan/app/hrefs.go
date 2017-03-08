@@ -2,7 +2,7 @@
 // $ goagen
 // --design=gorilla_fan/design
 // --out=$(GOPATH)/src/gorilla_fan
-// --version=v1.1.0-dirty
+// --version=v1.0.0
 //
 // API "gorilla_fan": Application Resource Href Factories
 //
