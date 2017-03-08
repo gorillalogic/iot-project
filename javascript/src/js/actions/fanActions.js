@@ -16,14 +16,18 @@ export function fetchFan () {
 }
 
 export function setFanVal (val) {
-  return (dispatch) => {
-    axios.post(`${Config.serverUrl}/fan`, {val})
-      .then((response) => {
-        dispatch({type: 'SET_FAN_VAL', payload: response.data})
-      })
-      .catch((err) => {
-        dispatch({type: 'SET_FAN_VAL_REJECTED', payload: err})
-      })
+  // return (dispatch) => {
+  //   axios.post(`${Config.serverUrl}/fan`, {val})
+  //     .then((response) => {
+  //       dispatch({type: 'SET_FAN_VAL', payload: response.data})
+  //     })
+  //     .catch((err) => {
+  //       dispatch({type: 'SET_FAN_VAL_REJECTED', payload: err})
+  //     })
+  // }
+  return {
+    type: 'SET_FAN_VAL',
+    payload: val
   }
 }
 
