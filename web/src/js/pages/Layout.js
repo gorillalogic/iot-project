@@ -8,7 +8,7 @@ export default class Layout extends React.Component {
     console.log('stuff', this.props)
     const {location} = this.props
     const containerStyle = {
-      marginTop: '60px'
+      marginTop: '10px'
     }
     return (
       <div>
@@ -16,7 +16,6 @@ export default class Layout extends React.Component {
         <div class='container' style={containerStyle}>
           <div class='row'>
             <div class='col-lg-12'>
-              <h1>Settings</h1>
               {this.props.children}
             </div>
           </div>
