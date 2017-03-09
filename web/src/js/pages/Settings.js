@@ -1,5 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import debounce from 'lodash/debounce';
 
 import {fetchTemp, setTempMin, setTempMax, resetTempVal} from '../actions/tempActions'
 import {fetchFan, setFanVal, resetFanVal} from '../actions/fanActions'
@@ -17,20 +18,42 @@ import TextField from 'material-ui/TextField'
     fanFetched: store.fan.fetched
   }
 })
+
 export default class Settings extends React.Component {
+  constructor() {
+    super();
+    this.postTempMin = debounce(this.setTempMin, 1000)
+    this.postTempMax = debounce(this.setTempMax, 1000)
+  }
+
   componentWillMount() {
     this.props.dispatch(fetchTemp())
     this.props.dispatch(fetchFan())
   }
 
-  setTempMin (e) {
+  handleTempMinChange (e) {
     const min = e.target.value
+    this.setTempMin(min)
+    this.postTempMin(min)
+  }
+
+  handleTempMaxChange (e) {
+    const max = e.target.value
+    this.setTempMax(max)
+    this.postTempMax(max)
+  }
+
+  setTempMin (min) {
     this.props.dispatch(setTempMin(min))
   }
 
-  setTempMax (e) {
-    const min = e.target.value
-    this.props.dispatch(setTempMax(min))
+  setTempMax (max) {
+    this.props.dispatch(setTempMax(max))
+  }
+
+  getTempMax (e) {
+    const max = e.target.value
+    return max
   }
 
   setFanVal (e, isInputChecked) {
@@ -49,28 +72,33 @@ export default class Settings extends React.Component {
     // const { article } = params
     // const { date, filter } = query
     //console.log('temp stuff', this.props)
+    const textStyle = {
+      fontSize: '16px'
+    }
+
     return (
       <div>
+        <h2>Settings</h2>
         <form class='form-horizontal'>
           <div class='form-group'>
             <label class='col-sm-2 control-label'>Temperature</label>
             <div class='col-sm-3'>
-              <p class='form-control-static'>{this.props.temp.val}</p>
+              <p class='form-control-static' style={textStyle}>{this.props.temp.val}</p>
             </div>
           </div>
           <div class='form-group'>
             <label for='tempMin' class='col-sm-2 control-label'>Min threshold</label>
             <div class='col-sm-3'>
-                <MuiThemeProvider>
-                  <TextField type='number' id='tempMin' value={this.props.temp.min} hintText='Min threshold' onChange={this.setTempMin.bind(this)} />
-                </MuiThemeProvider>
+              <MuiThemeProvider>
+                <TextField type='number' id='tempMin' value={this.props.temp.min} hintText='Min threshold' onChange={this.handleTempMinChange.bind(this)} />
+              </MuiThemeProvider>
             </div>
           </div>
           <div class='form-group'>
             <label for='tempMax' class='col-sm-2 control-label'>Max threshold</label>
             <div class='col-sm-3'>
               <MuiThemeProvider>
-                <TextField type='number' id='tempMax' value={this.props.temp.max} hintText='Max threshold' onChange={this.setTempMax.bind(this)} />
+                <TextField type='number' id='tempMax' value={this.props.temp.max} hintText='Max threshold' onChange={this.handleTempMaxChange.bind(this)} />
               </MuiThemeProvider>
             </div>
           </div>
