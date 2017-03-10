@@ -2,23 +2,23 @@ const defaultValues = {
   fan: {
     val: false
   },
-  fetching: false,
-  fetched: false,
+  requesting: false,
+  requested: false,
   error: null
 }
 export default function reducer (state = defaultValues, action) {
   const actions = {
     'FETCH_FAN': () => {
-      state = {...state, fetching: true}
+      state = {...state, requesting: true}
     },
     'FETCH_FAN_REJECTED': () => {
-      state = {...state, fetching: false, error: action.payload}
+      state = {...state, requesting: false, error: action.payload}
     },
     'FETCH_FAN_FULLFILLED': () => {
       state = {
         ...state,
-        fetching: false,
-        fetched: true,
+        requesting: false,
+        requested: true,
         fan: action.payload
       }
     },
