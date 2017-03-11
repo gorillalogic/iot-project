@@ -24,6 +24,12 @@ export default function reducer (state = defaultValues, action) {
         temp: {...state.temp, val: action.payload.val}
       }
     },
+    'SET_TEMP': () => {
+      state = {
+        ...state,
+        temp: {...state.temp, val: action.payload}
+      }
+    },
     'SET_TEMP_MIN': () => {
       state = {
         ...state,
@@ -56,7 +62,10 @@ export default function reducer (state = defaultValues, action) {
           ...state.temp,
           min: defaultValues.temp.min,
           max: defaultValues.temp.max
-        }
+        },
+        requesting: false,
+        requested: false,
+        error: null
       }
     }
   }

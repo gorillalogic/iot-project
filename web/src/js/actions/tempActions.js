@@ -4,15 +4,28 @@ import axios from 'axios'
 const Config = require('Config')
 
 export function fetchTemp () {
-  return (dispatch) => {
-    dispatch({type: 'FETCH_TEMP'})
-    axios.get(`${Config.serverUrl}/temp`)
-      .then((response) => {
-        dispatch({type: 'FETCH_TEMP_FULLFILLED', payload: response.data})
-      })
-      .catch((err) => {
-        dispatch({type: 'FETCH_TEMP_REJECTED', payload: err})
-      })
+  // return (dispatch) => {
+  //   dispatch({type: 'FETCH_TEMP'})
+  //   axios.get(`${Config.serverUrl}/temp`)
+  //     .then((response) => {
+  //       dispatch({type: 'FETCH_TEMP_FULLFILLED', payload: response.data})
+  //     })
+  //     .catch((err) => {
+  //       dispatch({type: 'FETCH_TEMP_REJECTED', payload: err})
+  //     })
+  // }
+  return {
+    type: 'FETCH_TEMP_FULLFILLED',
+    payload: {
+      val: 22
+    }
+  }
+}
+
+export function setTemp (temp) {
+  return {
+    type: 'SET_TEMP',
+    payload: temp
   }
 }
 
