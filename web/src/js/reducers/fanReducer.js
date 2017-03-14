@@ -1,6 +1,7 @@
 const defaultValues = {
   fan: {
-    val: false
+    val: false,
+    override: false
   },
   requesting: false,
   requested: false,
@@ -19,19 +20,41 @@ export default function reducer (state = defaultValues, action) {
         ...state,
         requesting: false,
         requested: true,
-        fan: action.payload
+        fan: {
+          ...state.fan,
+          val: action.payload.val
+        }
       }
     },
     'SET_FAN_VAL': () => {
       state = {
         ...state,
-        fan: {...state.fan, val: action.payload}
+        fan: {
+          ...state.fan,
+          val: action.payload
+        }
+      }
+    },
+    'SET_FAN_OVERRIDE': () => {
+      state = {
+        ...state,
+        fan: {
+          ...state.fan,
+          override: action.payload
+        }
       }
     },
     'RESET_FAN_VAL': () => {
       state = {
         ...state,
-        fan: {...state.fan, val: defaultValues.fan.val}
+        fan: {
+          ...state.fan,
+          val: defaultValues.fan.val,
+          override: defaultValues.fan.override
+        },
+        requesting: false,
+        requested: false,
+        error: null
       }
     }
   }
