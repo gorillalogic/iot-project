@@ -1,1 +1,6 @@
 *.swp
+*.tfvars
+*.min.js
+node_modules
+*.backup
+*.tfstate
