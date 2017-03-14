@@ -2,7 +2,9 @@ const defaultValues = {
   temp: {
     val: null,
     min: 20,
-    max: 23
+    max: 23,
+    minError: '',
+    maxError: ''
   },
   requesting: false,
   requested: false,
@@ -40,6 +42,18 @@ export default function reducer (state = defaultValues, action) {
       state = {
         ...state,
         temp: {...state.temp, max: action.payload}
+      }
+    },
+    'SET_TEMP_MIN_ERROR': () => {
+      state = {
+        ...state,
+        temp: {...state.temp, minError: action.payload}
+      }
+    },
+    'SET_TEMP_MAX_ERROR': () => {
+      state = {
+        ...state,
+        temp: {...state.temp, maxError: action.payload}
       }
     },
     'POST_TEMP_THRESHOLD': () => {

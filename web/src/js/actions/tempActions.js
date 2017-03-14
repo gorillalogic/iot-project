@@ -36,6 +36,13 @@ export function setTempMin (min) {
   }
 }
 
+export function setTempMinError (min) {
+  return {
+    type: 'SET_TEMP_MIN_ERROR',
+    payload: min
+  }
+}
+
 export function postTempMin (min) {
   return {
     type: 'POST_TEMP_MIN',
@@ -46,6 +53,13 @@ export function postTempMin (min) {
 export function setTempMax (max) {
   return {
     type: 'SET_TEMP_MAX',
+    payload: max
+  }
+}
+
+export function setTempMaxError (max) {
+  return {
+    type: 'SET_TEMP_MAX_ERROR',
     payload: max
   }
 }

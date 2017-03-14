@@ -2,7 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import debounce from 'lodash/debounce';
 
-import {fetchTemp, setTemp, setTempMin, setTempMax, resetTempVal} from '../actions/tempActions'
+import {fetchTemp, setTemp, setTempMin, setTempMax, setTempMinError, setTempMaxError, resetTempVal} from '../actions/tempActions'
 import {fetchFan, setFanVal, getFanOverride, setFanOverride, resetFanVal} from '../actions/fanActions'
 
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
@@ -30,9 +30,9 @@ const client = mqtt.connect(Config.iotUrl)
 
 export default class Settings extends React.Component {
   constructor() {
-    super();
-    this.postTempMin = debounce(this.setTempMin, 1000)
-    this.postTempMax = debounce(this.setTempMax, 1000)
+    super()
+    this.postTempMin = debounce(this.setTempMin, 600)
+    this.postTempMax = debounce(this.setTempMax, 600)
   }
 
   componentWillMount() {
@@ -46,13 +46,13 @@ export default class Settings extends React.Component {
       setInterval(() => {
         const changingTemp = Math.floor(Math.random() * (17 - 27)) + 27
         client.publish('temp', changingTemp)
-      }, 5000);
+      }, 6000);
     })
     client.on('message', (topic, message) => {
       if (topic === 'temp' && message) {
         const val = parseInt(message.toString())
         that.props.dispatch(setTemp(val))
-        that.validateTresholds()
+        that.handleFan()
       }
       //client.end()
     })
@@ -61,14 +61,21 @@ export default class Settings extends React.Component {
 
   handleTempMinChange (e) {
     const min = e.target.value
+
     this.setTempMin(min)
-    this.postTempMin(min)
+
+    if (this.validateTresholds({min})) {
+      this.postTempMin(min)
+    }
   }
 
   handleTempMaxChange (e) {
     const max = e.target.value
     this.setTempMax(max)
-    this.postTempMax(max)
+
+    if (this.validateTresholds({max})) {
+      this.postTempMax(max)
+    }
   }
 
   setTempMin (min) {
@@ -77,11 +84,6 @@ export default class Settings extends React.Component {
 
   setTempMax (max) {
     this.props.dispatch(setTempMax(max))
-  }
-
-  getTempMax (e) {
-    const max = e.target.value
-    return max
   }
 
   setFanVal (e, isInputChecked) {
@@ -94,7 +96,7 @@ export default class Settings extends React.Component {
     this.props.dispatch(setFanOverride(val))
   }
 
-  validateTresholds() {
+  handleFan () {
     if (!this.props.fan.override) {
       if (this.props.temp.val > this.props.temp.max) {
         this.props.dispatch(setFanVal(true))
@@ -102,6 +104,51 @@ export default class Settings extends React.Component {
         this.props.dispatch(setFanVal(false))
       }
     }
+  }
+
+  validateTresholds (threshold) {
+    let valid = true
+    // const tempMax = threshold.max || parseInt(this.props.temp.max) || 0
+    // const tempMin = threshold.min || parseInt(this.props.temp.min) || 0
+    const tempMax = threshold.max ? parseInt(threshold.max) : parseInt(this.props.temp.max)
+    const tempMin = threshold.min ? parseInt(threshold.min) : parseInt(this.props.temp.min)
+
+    //console.log('tempMin', tempMin)
+    //console.log('tempMax', tempMax)
+
+    if (isNaN(tempMin) || isNaN(tempMax)) {
+      if (isNaN(tempMin)) {
+        this.props.dispatch(setTempMinError('Invalid value'))
+      } else if (tempMin === '') {
+        this.props.dispatch(setTempMinError(''))
+      }
+      if (isNaN(tempMax)) {
+        this.props.dispatch(setTempMaxError('Invalid value'))
+      } else if (tempMin === '') {
+        this.props.dispatch(setTempMaxError(''))
+      }
+      valid = false
+    } else {
+      if (tempMax > 30) {
+        this.props.dispatch(setTempMaxError('The value is too high'))
+        valid = false
+      } else {
+        this.props.dispatch(setTempMaxError(''))
+      }
+      if (tempMin < 0) {
+        this.props.dispatch(setTempMinError('The value is too low'))
+        valid = false
+      } else {
+        this.props.dispatch(setTempMinError(''))
+      }
+      if (valid && (this.props.temp.min > tempMax) ) {
+        this.props.dispatch(setTempMinError('The min value should be lower than the max (duh!)'))
+        this.props.dispatch(setTempMaxError('The max value should be higher than the min (duh!)'))
+        valid = false
+      }
+    }
+
+    return valid
   }
 
   reset () {
@@ -145,7 +192,7 @@ export default class Settings extends React.Component {
             <label for='tempMin' class='col-sm-2 control-label'>Min threshold</label>
             <div class='col-sm-2'>
               <MuiThemeProvider>
-                <TextField type='number' id='tempMin' value={this.props.temp.min} hintText='Min threshold' onChange={this.handleTempMinChange.bind(this)} />
+                <TextField type='number' id='tempMin' value={this.props.temp.min} hintText='Min threshold'  errorText={this.props.temp.minError} onChange={this.handleTempMinChange.bind(this)} />
               </MuiThemeProvider>
             </div>
           </div>
@@ -153,7 +200,7 @@ export default class Settings extends React.Component {
             <label for='tempMax' class='col-sm-2 control-label'>Max threshold</label>
             <div class='col-sm-2'>
               <MuiThemeProvider>
-                <TextField type='number' id='tempMax' value={this.props.temp.max} hintText='Max threshold' onChange={this.handleTempMaxChange.bind(this)} />
+                <TextField type='number' id='tempMax' value={this.props.temp.max} hintText='Max threshold' errorText={this.props.temp.maxError} onChange={this.handleTempMaxChange.bind(this)} />
               </MuiThemeProvider>
             </div>
           </div>
