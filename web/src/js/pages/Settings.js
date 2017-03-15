@@ -108,13 +108,8 @@ export default class Settings extends React.Component {
 
   validateTresholds (threshold) {
     let valid = true
-    // const tempMax = threshold.max || parseInt(this.props.temp.max) || 0
-    // const tempMin = threshold.min || parseInt(this.props.temp.min) || 0
     const tempMax = threshold.max ? parseInt(threshold.max) : parseInt(this.props.temp.max)
     const tempMin = threshold.min ? parseInt(threshold.min) : parseInt(this.props.temp.min)
-
-    //console.log('tempMin', tempMin)
-    //console.log('tempMax', tempMax)
 
     if (isNaN(tempMin) || isNaN(tempMax)) {
       if (isNaN(tempMin)) {
