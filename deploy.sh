@@ -1,4 +1,5 @@
 #!/bin/sh 
+sudo npm install  webpack -g
 
 WEBPACK=`which webpack`
 
