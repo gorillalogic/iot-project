@@ -23,5 +23,4 @@ deployment:
     branch: dev
     commands:
       - >
-        ./deploy.sh
-        
+       pushd web/src && aws s3 cp client.min.js s3://gorilla-iot-react --acl public-read
