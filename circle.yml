@@ -4,7 +4,7 @@ machine:
 
 dependencies:
   override:
-    - npm install 
+    - pushd web && npm install 
     - sudo npm install webpack -g
   pre:
     - sudo pip install awscli
