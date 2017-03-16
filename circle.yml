@@ -3,9 +3,11 @@ machine:
     version: 7.7.2
 
 dependencies:
+  override:
+    - npm install 
+    - sudo npm install webpack -g
   pre:
     - sudo pip install awscli
-    - sudo npm install -g webpack
 
 database:
   override:
