@@ -1,0 +1,26 @@
+machine:
+  node:
+    version: 7.7.2
+
+dependencies:
+  override:
+    - pushd web && npm install 
+    - npm install webpack  -g
+  pre:
+    
+    - sudo pip install awscli
+
+database:
+  override:
+    - echo 'Skipping database'
+test:
+  override:
+    - echo 'Skipping testing'
+
+deployment:
+  production:
+    branch: dev
+    commands:
+      - >
+       pushd web && webpack --progress -p
+       pushd web/src && aws s3 cp client.min.js s3://gorilla-iot-react --acl public-read
