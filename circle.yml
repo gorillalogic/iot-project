@@ -5,8 +5,10 @@ machine:
 dependencies:
   override:
     - pushd web && npm install 
-    - sudo npm install webpack -g
+    - npm install webpack  -g
+    - pushd web && webpack --progress -p
   pre:
+    
     - sudo pip install awscli
 
 database:
