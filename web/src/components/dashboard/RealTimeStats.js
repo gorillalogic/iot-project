@@ -1,11 +1,11 @@
-import React, {PropTypes} from 'react';
-import Paper from 'material-ui/Paper';
-import {white, purple600, purple500} from 'material-ui/styles/colors';
-import {LineChart, Line, ResponsiveContainer} from 'recharts';
-import {typography} from 'material-ui/styles';
+/*eslint-disable */
+import React, {PropTypes} from 'react'
+import Paper from 'material-ui/Paper'
+import {white, purple600, purple500} from 'material-ui/styles/colors'
+import {LineChart, Line, ResponsiveContainer} from 'recharts'
+import {typography} from 'material-ui/styles'
 
 const RealTimeStats = (props) => {
-
   const styles = {
     paper: {
       backgroundColor: purple500,
@@ -20,9 +20,9 @@ const RealTimeStats = (props) => {
       fontWeight: typography.fontWeightLight,
       color: white,
       backgroundColor: purple600,
-      padding: 10,
+      padding: 10
     }
-  };
+  }
 
   return (
     <Paper style={styles.paper}>
@@ -30,16 +30,17 @@ const RealTimeStats = (props) => {
       <div style={styles.div}>
         <ResponsiveContainer >
           <LineChart data={props.data}>
-            <Line type="monotone" dataKey="pv" stroke="#8884d8" strokeWidth={2} />
+            <Line type='monotone' dataKey='pv' stroke='#8884d8' strokeWidth={2} />
           </LineChart>
         </ResponsiveContainer>
       </div>
     </Paper>
-  );
-};
+  )
+}
 
 RealTimeStats.propTypes = {
   data: PropTypes.array
-};
+}
 
-export default RealTimeStats;
+export default RealTimeStats
+/*eslint-enable */

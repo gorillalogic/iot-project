@@ -1,5 +1,5 @@
-import {typography} from 'material-ui/styles';
-import {grey600} from 'material-ui/styles/colors';
+import {typography} from 'material-ui/styles'
+import {grey600} from 'material-ui/styles/colors'
 
 const styles = {
   navigation: {
@@ -20,6 +20,6 @@ const styles = {
   clear: {
     clear: 'both'
   }
-};
+}
 
-export default styles;
+export default styles

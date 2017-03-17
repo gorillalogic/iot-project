@@ -1,12 +1,13 @@
-import React, {PropTypes} from 'react';
-import Paper from 'material-ui/Paper';
-import {white, grey800} from 'material-ui/styles/colors';
-import {typography} from 'material-ui/styles';
+/*eslint-disable */
+import React, {PropTypes} from 'react'
+import Paper from 'material-ui/Paper'
+import {white, grey800} from 'material-ui/styles/colors'
+import {typography} from 'material-ui/styles'
 
 class InfoBox extends React.Component {
 
-  render() {
-    const {color, title, value, Icon} = this.props;
+  render () {
+    const {color, title, value, Icon} = this.props
 
     const styles = {
       content: {
@@ -39,13 +40,13 @@ class InfoBox extends React.Component {
         maxWidth: '100%'
 
       }
-    };
+    }
 
     return (
       <Paper>
         <span style={styles.iconSpan}>
           <Icon color={white}
-                style={styles.icon}
+            style={styles.icon}
           />
         </span>
 
@@ -54,7 +55,7 @@ class InfoBox extends React.Component {
           <span style={styles.number}>{value}</span>
         </div>
       </Paper>
-      );
+    )
   }
 }
 
@@ -63,6 +64,7 @@ InfoBox.propTypes = {
   color: PropTypes.string,
   title: PropTypes.string,
   value: PropTypes.any
-};
+}
 
-export default InfoBox;
+export default InfoBox
+/*eslint-enable */
