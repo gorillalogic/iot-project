@@ -1,5 +1,5 @@
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import {blue600, grey900} from 'material-ui/styles/colors';
+import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import {blue600, grey900} from 'material-ui/styles/colors'
 
 const themeDefault = getMuiTheme({
   palette: {
@@ -13,9 +13,8 @@ const themeDefault = getMuiTheme({
     color: grey900
   },
   raisedButton: {
-    primaryColor: blue600,
+    primaryColor: blue600
   }
-});
+})
 
-
-export default themeDefault;
+export default themeDefault

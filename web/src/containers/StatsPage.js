@@ -1,3 +1,4 @@
+/*eslint-disable */
 import React from 'react'
 import {Link} from 'react-router'
 import {connect} from 'react-redux'
@@ -9,7 +10,6 @@ export default class SettingsPage extends React.Component {
   }
 
   render () {
-
     return (
       <div>
         <h3 style={globalStyles.navigation}>Statistics</h3>
@@ -23,3 +23,4 @@ export default class SettingsPage extends React.Component {
     )
   }
 }
+/*eslint-enable */
