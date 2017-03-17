@@ -22,10 +22,10 @@ export function fetchTemp () {
   }
 }
 
-export function setTemp (temp) {
+export function setTempVal (val) {
   return {
-    type: 'SET_TEMP',
-    payload: temp
+    type: 'SET_TEMP_VAL',
+    payload: val
   }
 }
 
@@ -71,9 +71,16 @@ export function postTempMax (max) {
   }
 }
 
-export function resetTempVal (max) {
+export function resetTempVal () {
   return {
     type: 'RESET_TEMP_VAL',
     payload: null
+  }
+}
+
+export function addTempHistory (val) {
+  return {
+    type: 'ADD_TEMP_HISTORY',
+    payload: val
   }
 }

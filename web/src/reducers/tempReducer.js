@@ -4,7 +4,8 @@ const defaultValues = {
     min: 20,
     max: 23,
     minError: '',
-    maxError: ''
+    maxError: '',
+    history: []
   },
   requesting: false,
   requested: false,
@@ -26,7 +27,7 @@ export default function reducer (state = defaultValues, action) {
         temp: {...state.temp, val: action.payload.val}
       }
     },
-    'SET_TEMP': () => {
+    'SET_TEMP_VAL': () => {
       state = {
         ...state,
         temp: {...state.temp, val: action.payload}
@@ -56,6 +57,20 @@ export default function reducer (state = defaultValues, action) {
         temp: {...state.temp, maxError: action.payload}
       }
     },
+    'ADD_TEMP_HISTORY': () => {
+      const history = [...state.temp.history]
+      if (history.length > 7) {
+        history.shift()
+      }
+      history.push(action.payload)
+      state = {
+        ...state,
+        temp: {
+          ...state.temp,
+          history
+        }
+      }
+    },
     'POST_TEMP_THRESHOLD': () => {
       state = {...state, requesting: true}
     },
@@ -75,7 +90,9 @@ export default function reducer (state = defaultValues, action) {
         temp: {
           ...state.temp,
           min: defaultValues.temp.min,
-          max: defaultValues.temp.max
+          max: defaultValues.temp.max,
+          minError: '',
+          maxError: ''
         },
         requesting: false,
         requested: false,
