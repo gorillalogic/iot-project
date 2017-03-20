@@ -7,12 +7,15 @@ import (
 func main() {
 
 	router := gin.Default()
+	fan := Fan{
+		name: "Fan1",
+	}
 
-	router.GET("/fan", showFanStatus)
+	router.GET("/fan", fan.status)
+	//TODO: Fix thermo data structure
 	router.GET("/thermo", getThemp)
-	router.PUT("/fan", turnFan)
+	router.PUT("/fan", fan.publish)
 	router.PUT("/thermo", setThreshold)
-
 	router.Run(":9090")
 
 }
