@@ -69,6 +69,8 @@ export default class SettingsPage extends React.Component {
     if (this.validateTresholds({min})) {
       this.postTempMin(min)
     }
+
+    this.handleFan()
   }
 
   handleTempMaxChange (e) {
@@ -78,6 +80,8 @@ export default class SettingsPage extends React.Component {
     if (this.validateTresholds({max})) {
       this.postTempMax(max)
     }
+
+    this.handleFan()
   }
 
   setTempMin (min) {
