@@ -3,7 +3,7 @@ import React from 'react'
 import {Link} from 'react-router'
 import {connect} from 'react-redux'
 import debounce from 'lodash/debounce'
-import {cyan600, pink600, purple600, orange600} from 'material-ui/styles/colors'
+import {cyan600, pink600, purple600, orange600, yellow700} from 'material-ui/styles/colors'
 import Assessment from 'material-ui/svg-icons/action/assessment'
 import Face from 'material-ui/svg-icons/action/face'
 import ThumbUp from 'material-ui/svg-icons/action/thumb-up'
@@ -12,6 +12,7 @@ import Nature from 'material-ui/svg-icons/image/nature'
 import ACUnit from 'material-ui/svg-icons/places/ac-unit'
 import Whatshot from 'material-ui/svg-icons/social/whatshot'
 import ShoppingCart from 'material-ui/svg-icons/action/shopping-cart'
+import Warning from 'material-ui/svg-icons/alert/warning'
 import InfoBox from '../components/dashboard/InfoBox'
 import RealTimeStats from '../components/dashboard/RealTimeStats'
 import globalStyles from '../styles'
@@ -111,7 +112,7 @@ export default class SettingsPage extends React.Component {
     if (!this.props.fan.override) {
       if (this.props.temp.val > this.props.temp.max) {
         this.props.dispatch(setFanVal(true))
-      } else if (this.props.temp.val < this.props.temp.min) {
+      } else if (this.props.temp.val < this.props.temp.max) {
         this.props.dispatch(setFanVal(false))
       }
     }
@@ -190,19 +191,19 @@ export default class SettingsPage extends React.Component {
         <h3 style={globalStyles.navigation}>Settings</h3>
 
         <div className='row'>
-
-          <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 '>
-            <InfoBox Icon={Nature}
-              color={pink600}
+          <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15'>
+            <InfoBox Icon={this.props.temp.val > this.props.temp.max ? Warning : Nature}
+              color={this.props.temp.val > this.props.temp.max ? yellow700 : pink600}
               title='Temperature'
               value={this.props.temp.val}
             />
           </div>
 
-          <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 '>
+          <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15'>
             <InfoBox Icon={Toys}
               color={cyan600}
               title='Fan'
+              spinClass={this.props.fan.val ? 'fa fa-spin' : ''}
               value={
                 <Toggle
                   label={this.props.fan.val ? 'On' : 'Off'}
@@ -214,7 +215,7 @@ export default class SettingsPage extends React.Component {
             />
           </div>
 
-          <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 '>
+          <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15'>
             <InfoBox Icon={ACUnit}
               color={purple600}
               title='Min. Threshold'
@@ -222,12 +223,14 @@ export default class SettingsPage extends React.Component {
             />
           </div>
 
-          <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15 '>
+          <div className='col-xs-12 col-sm-6 col-md-3 col-lg-3 m-b-15'>
+
             <InfoBox Icon={Whatshot}
               color={orange600}
               title='Max. Threshold'
               value={this.props.temp.max}
             />
+
           </div>
         </div>
 
