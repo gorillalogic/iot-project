@@ -1,4 +1,3 @@
 {
-  "serverUrl": "http://localhost:3030",
-  "iotUrl": "mqtt://test.mosquitto.org:8080"
+  "serverUrl": "http://34.208.5.75:9090"
 }
