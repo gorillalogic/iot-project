@@ -1,5 +1,6 @@
 const defaultValues = {
   temp: {
+    name: 'Thermo1',
     val: null,
     min: 20,
     max: 23,
@@ -71,13 +72,13 @@ export default function reducer (state = defaultValues, action) {
         }
       }
     },
-    'POST_TEMP_THRESHOLD': () => {
+    'PUT_TEMP_THRESHOLD': () => {
       state = {...state, requesting: true}
     },
-    'POST_TEMP_THRESHOLD_REJECTED': () => {
+    'PUT_TEMP_THRESHOLD_REJECTED': () => {
       state = {...state, requesting: false, error: action.payload}
     },
-    'POST_TEMP_THRESHOLD_FULLFILLED': () => {
+    'PUT_TEMP_THRESHOLD_FULLFILLED': () => {
       state = {
         ...state,
         requesting: false,

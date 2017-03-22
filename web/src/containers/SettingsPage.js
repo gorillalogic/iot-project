@@ -3,6 +3,7 @@ import React from 'react'
 import {Link} from 'react-router'
 import {connect} from 'react-redux'
 import debounce from 'lodash/debounce'
+import Websocket from 'react-websocket'
 import {cyan600, pink600, purple600, orange600, yellow700} from 'material-ui/styles/colors'
 import Assessment from 'material-ui/svg-icons/action/assessment'
 import Face from 'material-ui/svg-icons/action/face'
@@ -31,8 +32,8 @@ import PageBase from '../components/PageBase'
 import Data from '../data'
 
 import {fetchTemp, setTempVal, setTempMin, setTempMax,
-  setTempMinError, setTempMaxError, addTempHistory, resetTempVal} from '../actions/tempActions'
-import {fetchFan, setFanVal, getFanOverride, setFanOverride, resetFanVal} from '../actions/fanActions'
+  setTempMinError, setTempMaxError, putTempMin, postTempMax, addTempHistory, resetTempVal} from '../actions/tempActions'
+import {fetchFan, setFanVal, getFanOverride, setFanOverride, putFanVal, resetFanVal} from '../actions/fanActions'
 
 @connect((store) => {
   return {
@@ -46,13 +47,13 @@ import {fetchFan, setFanVal, getFanOverride, setFanOverride, resetFanVal} from '
 export default class SettingsPage extends React.Component {
   constructor () {
     super()
-    this.postTempMin = debounce(this.setTempMin, 600)
-    this.postTempMax = debounce(this.setTempMax, 600)
+    this.putTempMin = debounce(this.setTempMin, 600)
+    this.putTempMax = debounce(this.setTempMax, 600)
   }
 
   componentWillMount () {
-    this.props.dispatch(fetchTemp())
-    this.props.dispatch(fetchFan())
+    this.props.dispatch(fetchTemp(this.props.temp.name))
+    this.props.dispatch(fetchFan(this.props.fan.name))
 
     setInterval(() => {
       const changingTemp = Math.floor(Math.random() * (17 - 27)) + 27
@@ -60,6 +61,7 @@ export default class SettingsPage extends React.Component {
       this.handleFan(changingTemp)
       this.props.dispatch(addTempHistory({'pv': changingTemp}))
     }, 10000);
+
   }
 
   handleTempMinChange (e) {
@@ -67,7 +69,7 @@ export default class SettingsPage extends React.Component {
     this.setTempMin(min)
 
     if (this.validateTresholds({min})) {
-      this.postTempMin(min)
+      this.putTempMin(parseFloat(min), this.props.temp.name)
     }
 
     this.handleFan()
@@ -78,7 +80,7 @@ export default class SettingsPage extends React.Component {
     this.setTempMax(max)
 
     if (this.validateTresholds({max})) {
-      this.postTempMax(max)
+      this.putTempMax(parseFloat(max), this.props.temp.name)
     }
 
     this.handleFan()
@@ -96,11 +98,8 @@ export default class SettingsPage extends React.Component {
 
   handleFanToggle (e, isInputChecked) {
     const val = !this.props.fan.val
-    this.setFanVal(val)
-  }
-
-  setFanVal (val) {
     this.props.dispatch(setFanVal(val))
+    this.props.dispatch(putFanVal(val, this.props.fan.name))
   }
 
   handleFanOverride (e, isInputChecked) {
@@ -116,16 +115,18 @@ export default class SettingsPage extends React.Component {
     if (!this.props.fan.override) {
       if (this.props.temp.val > this.props.temp.max) {
         this.props.dispatch(setFanVal(true))
+        // this.props.dispatch(putFanVal(true, this.props.fan.name))
       } else if (this.props.temp.val < this.props.temp.max) {
         this.props.dispatch(setFanVal(false))
+        // this.props.dispatch(putFanVal(false, this.props.fan.name))
       }
     }
   }
 
   validateTresholds (threshold = {}) {
     let valid = true
-    const tempMax = threshold.max ? parseInt(threshold.max) : parseInt(this.props.temp.max)
-    const tempMin = threshold.min ? parseInt(threshold.min) : parseInt(this.props.temp.min)
+    const tempMax = threshold.max ? parseFloat(threshold.max) : parseFloat(this.props.temp.max)
+    const tempMin = threshold.min ? parseFloat(threshold.min) : parseFloat(this.props.temp.min)
 
     if (isNaN(tempMin) || isNaN(tempMax)) {
       if (isNaN(tempMin)) {
@@ -165,6 +166,11 @@ export default class SettingsPage extends React.Component {
   reset () {
     this.props.dispatch(resetTempVal())
     this.props.dispatch(resetFanVal())
+  }
+
+  handleData (data) {
+    const result = JSON.parse(data)
+    console.log('result', result)
   }
 
   render () {
@@ -277,6 +283,8 @@ export default class SettingsPage extends React.Component {
                               onTouchTap={this.reset.bind(this)}
                               primary={true}/>
               </form>
+              {/*<Websocket debug={true} reconnect={true} url='ws://127.0.0.1:12345/quux'
+                onMessage={this.handleData.bind(this)} /> */}
             </PageBase>
           </div>
 

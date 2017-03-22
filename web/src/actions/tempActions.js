@@ -3,10 +3,10 @@
 // import axios from 'axios'
 // const Config = require('Config')
 
-export function fetchTemp () {
+export function fetchTemp (name) {
   // return (dispatch) => {
   //   dispatch({type: 'FETCH_TEMP'})
-  //   axios.get(`${Config.serverUrl}/temp`)
+  //   axios.get(`${Config.serverUrl}/thermo/${name}`)
   //     .then((response) => {
   //       dispatch({type: 'FETCH_TEMP_FULLFILLED', payload: response.data})
   //     })
@@ -43,7 +43,19 @@ export function setTempMinError (min) {
   }
 }
 
-export function postTempMin (min) {
+export function putTempMin (min, name) {
+  // return (dispatch) => {
+  //   axios.put(`${Config.serverUrl}/thermo/${name}`, {
+  //     'min': min
+  //   })
+  //   .then((response) => {
+  //      dispatch({type: 'POST_TEMP_MIN', payload: min)
+  //   })
+  //   .catch((err) => {
+  //
+  //   })
+  // }
+
   return {
     type: 'POST_TEMP_MIN',
     payload: min
@@ -64,7 +76,18 @@ export function setTempMaxError (max) {
   }
 }
 
-export function postTempMax (max) {
+export function putTempMax (max, name) {
+  // return (dispatch) => {
+  //   axios.put(`${Config.serverUrl}/thermo/${name}`, {
+  //     'max': max
+  //   })
+  //   .then((response) => {
+  //      dispatch({type: 'POST_TEMP_MAX', payload: max)
+  //   })
+  //   .catch((err) => {
+  //
+  //   })
+  // }
   return {
     type: 'POST_TEMP_MAX',
     payload: max
