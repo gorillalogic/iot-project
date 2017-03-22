@@ -22,7 +22,7 @@ export default function reducer (state = defaultValues, action) {
         requested: true,
         fan: {
           ...state.fan,
-          val: action.payload.val
+          val: action.payload.state
         }
       }
     },
@@ -55,6 +55,19 @@ export default function reducer (state = defaultValues, action) {
         requesting: false,
         requested: false,
         error: null
+      }
+    },
+    'PUT_FAN_VAL': () => {
+      state = {...state, requesting: true}
+    },
+    'PUT_FAN_VAL_REJECTED': () => {
+      state = {...state, requesting: false, error: action.payload}
+    },
+    'PUT_FAN_VAL_FULLFILLED': () => {
+      state = {
+        ...state,
+        requesting: false,
+        requested: true
       }
     }
   }
