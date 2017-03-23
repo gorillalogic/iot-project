@@ -99,7 +99,7 @@ export default class SettingsPage extends React.Component {
   handleFanToggle (e, isInputChecked) {
     const val = !this.props.fan.val
     this.props.dispatch(setFanVal(val))
-    this.props.dispatch(putFanVal(val))
+    //this.props.dispatch(putFanVal(val))
   }
 
   handleFanOverride (e, isInputChecked) {
