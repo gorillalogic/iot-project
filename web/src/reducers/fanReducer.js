@@ -1,5 +1,6 @@
 const defaultValues = {
   fan: {
+    name: 'Fan1',
     val: false,
     override: false
   },
@@ -22,7 +23,8 @@ export default function reducer (state = defaultValues, action) {
         requested: true,
         fan: {
           ...state.fan,
-          val: action.payload.state
+          val: action.payload.status,
+          name: action.payload.name
         }
       }
     },

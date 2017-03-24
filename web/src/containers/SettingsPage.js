@@ -52,8 +52,8 @@ export default class SettingsPage extends React.Component {
   }
 
   componentWillMount () {
-    this.props.dispatch(fetchTemp())
-    this.props.dispatch(fetchFan())
+    this.props.dispatch(fetchTemp(this.props.temp.name))
+    this.props.dispatch(fetchFan(this.props.fan.name))
 
     setInterval(() => {
       const changingTemp = Math.floor(Math.random() * (17 - 27)) + 27
@@ -69,7 +69,7 @@ export default class SettingsPage extends React.Component {
     this.setTempMin(min)
 
     if (this.validateTresholds({min})) {
-      this.putTempMin(min)
+      this.putTempMin(parseFloat(min), this.props.temp.name)
     }
 
     this.handleFan()
@@ -80,7 +80,7 @@ export default class SettingsPage extends React.Component {
     this.setTempMax(max)
 
     if (this.validateTresholds({max})) {
-      this.putTempMax(max)
+      this.putTempMax(parseFloat(max), this.props.temp.name)
     }
 
     this.handleFan()
@@ -99,7 +99,7 @@ export default class SettingsPage extends React.Component {
   handleFanToggle (e, isInputChecked) {
     const val = !this.props.fan.val
     this.props.dispatch(setFanVal(val))
-    //this.props.dispatch(putFanVal(val))
+    this.props.dispatch(putFanVal(val, this.props.fan.name))
   }
 
   handleFanOverride (e, isInputChecked) {
@@ -115,18 +115,18 @@ export default class SettingsPage extends React.Component {
     if (!this.props.fan.override) {
       if (this.props.temp.val > this.props.temp.max) {
         this.props.dispatch(setFanVal(true))
-        this.props.dispatch(putFanVal(true))
+        // this.props.dispatch(putFanVal(true, this.props.fan.name))
       } else if (this.props.temp.val < this.props.temp.max) {
         this.props.dispatch(setFanVal(false))
-        this.props.dispatch(putFanVal(false))
+        // this.props.dispatch(putFanVal(false, this.props.fan.name))
       }
     }
   }
 
   validateTresholds (threshold = {}) {
     let valid = true
-    const tempMax = threshold.max ? parseInt(threshold.max) : parseInt(this.props.temp.max)
-    const tempMin = threshold.min ? parseInt(threshold.min) : parseInt(this.props.temp.min)
+    const tempMax = threshold.max ? parseFloat(threshold.max) : parseFloat(this.props.temp.max)
+    const tempMin = threshold.min ? parseFloat(threshold.min) : parseFloat(this.props.temp.min)
 
     if (isNaN(tempMin) || isNaN(tempMax)) {
       if (isNaN(tempMin)) {

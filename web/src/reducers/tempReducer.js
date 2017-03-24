@@ -1,5 +1,6 @@
 const defaultValues = {
   temp: {
+    name: 'Thermo1',
     val: null,
     min: 20,
     max: 23,
@@ -20,11 +21,18 @@ export default function reducer (state = defaultValues, action) {
       state = {...state, requesting: false, error: action.payload}
     },
     'FETCH_TEMP_FULLFILLED': () => {
+      let tempVal = action.payload.val
+      if (tempVal === Math.floor(tempVal)) {
+        tempVal = tempVal.toFixed()
+      } else {
+        tempVal = tempVal.toFixed(2)
+      }
+      
       state = {
         ...state,
         requesting: false,
         requested: true,
-        temp: {...state.temp, val: action.payload.val}
+        temp: {...state.temp, val: tempVal}
       }
     },
     'SET_TEMP_VAL': () => {

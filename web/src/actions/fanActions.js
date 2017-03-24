@@ -3,10 +3,10 @@
 import axios from 'axios'
 const Config = require('Config')
 
-export function fetchFan () {
+export function fetchFan (name) {
   return (dispatch) => {
     dispatch({type: 'FETCH_FAN'})
-    axios.get(`${Config.serverUrl}/fan`)
+    axios.get(`${Config.serverUrl}/fan/${name}`)
       .then((response) => {
         dispatch({type: 'FETCH_FAN_FULLFILLED', payload: response.data})
       })
@@ -37,19 +37,17 @@ export function setFanOverride (val) {
   }
 }
 
-export function putFanVal (val) {
+export function putFanVal (val, name) {
   return (dispatch) => {
     dispatch({type: 'PUT_FAN_VAL'})
-    axios.put(`${Config.serverUrl}/fan`, {
+    axios.put(`${Config.serverUrl}/fan/${name}`, {
       'state': val
     })
     .then((response) => {
       dispatch({type: 'PUT_FAN_VAL_FULLFILLED', payload: response.data})
-      console.log('success', response)
     })
     .catch((err) => {
       dispatch({type: 'PUT_FAN_VAL_REJECTED', payload: err})
-      console.log('error', err)
     })
   }
 }
