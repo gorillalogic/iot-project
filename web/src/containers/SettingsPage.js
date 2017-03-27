@@ -83,7 +83,7 @@ export default class SettingsPage extends React.Component {
       this.putTempMax(parseFloat(max), this.props.temp.name)
     }
 
-    this.handleFan()
+    this.handleFan(max)
   }
 
   setTempMin (min) {
@@ -111,12 +111,15 @@ export default class SettingsPage extends React.Component {
     this.props.dispatch(setFanOverride(val))
   }
 
-  handleFan () {
-    if (!this.props.fan.override) {
-      if (this.props.temp.val > this.props.temp.max) {
+  handleFan (max) {
+    const tempVal = parseFloat(this.props.temp.val)
+    const tempMax = (max && !isNaN(max)) ? parseFloat(max) : parseFloat(this.props.temp.max)
+
+    if (!this.props.fan.override && tempMax) {
+      if (tempVal > tempMax) {
         this.props.dispatch(setFanVal(true))
         // this.props.dispatch(putFanVal(true, this.props.fan.name))
-      } else if (this.props.temp.val < this.props.temp.max) {
+      } else if (tempVal < tempMax) {
         this.props.dispatch(setFanVal(false))
         // this.props.dispatch(putFanVal(false, this.props.fan.name))
       }
