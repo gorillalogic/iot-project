@@ -27,7 +27,7 @@ export default function reducer (state = defaultValues, action) {
       } else {
         tempVal = tempVal.toFixed(2)
       }
-      
+
       state = {
         ...state,
         requesting: false,
@@ -100,7 +100,8 @@ export default function reducer (state = defaultValues, action) {
           min: defaultValues.temp.min,
           max: defaultValues.temp.max,
           minError: '',
-          maxError: ''
+          maxError: '',
+          history: []
         },
         requesting: false,
         requested: false,
