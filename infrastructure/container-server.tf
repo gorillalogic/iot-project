@@ -30,7 +30,7 @@ resource "aws_security_group" "gorilla_fan" {
     description = "Gorilla Fan Web Server Security Group"
     vpc_id      = "${data.aws_vpc.selected.id}"
     ingress{
-        to_port     = 80
+        to_port     = 9090
         from_port   = 0
         protocol    = "tcp"
         cidr_blocks = ["0.0.0.0/0"]
@@ -62,6 +62,7 @@ resource "aws_instance" "web" {
     instance_type           = "${var.instance_type}"
     key_name                = "gorilla_iot"
     disable_api_termination = false
+    iam_instance_profile    = "ecsInstanceRole"
 
     tags {
         Name = "gorilla_iot"
