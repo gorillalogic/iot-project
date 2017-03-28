@@ -1,21 +1,29 @@
 package main
 
 import (
-	"gopkg.in/gin-gonic/gin.v1"
+	"github.com/gin-gonic/gin"
+	"gopkg.in/gin-contrib/cors.v1"
 )
 
 func main() {
 
 	router := gin.Default()
-	fan := Fan{
-		name: "Fan1",
-	}
+	router.Use(cors.Default())
+	fan := new(Fan)
 
-	router.GET("/fan", fan.status)
-	//TODO: Fix thermo data structure
-	router.GET("/thermo", getThemp)
+	thermo := new(Thermo)
+
+	// FAN API
+	router.GET("/fan/", fan.status)
+	router.GET("/fan/:name", fan.status)
 	router.PUT("/fan", fan.publish)
-	router.PUT("/thermo", setThreshold)
+	router.PUT("/fan/:name", fan.publish)
+
+	// THERMOSTAT API
+	router.GET("/thermo/", thermo.status)
+	router.GET("/thermo/:name", thermo.status)
+	router.PUT("/thermo/", thermo.publish)
+	router.PUT("/thermo/:name", thermo.publish)
 	router.Run(":9090")
 
 }

@@ -73,7 +73,6 @@ void msg_callback_delta(char* src, unsigned int len, Message_status_t flag) {
 
 void setup() {
   Serial.begin(115200);
-  pinMode(8,OUTPUT);
   while(!Serial);
 
   char curr_version[80];
