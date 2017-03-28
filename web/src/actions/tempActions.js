@@ -1,25 +1,26 @@
 // How to use:
 // import { fetchUserName } from '../userActions'
-// import axios from 'axios'
-// const Config = require('Config')
+import axios from 'axios'
+const Config = require('Config')
 
 export function fetchTemp (name) {
-  // return (dispatch) => {
-  //   dispatch({type: 'FETCH_TEMP'})
-  //   axios.get(`${Config.serverUrl}/thermo/${name}`)
-  //     .then((response) => {
-  //       dispatch({type: 'FETCH_TEMP_FULLFILLED', payload: response.data})
-  //     })
-  //     .catch((err) => {
-  //       dispatch({type: 'FETCH_TEMP_REJECTED', payload: err})
-  //     })
-  // }
-  return {
-    type: 'FETCH_TEMP_FULLFILLED',
-    payload: {
-      val: 22
-    }
+  return (dispatch) => {
+    dispatch({type: 'FETCH_TEMP'})
+    axios.get(`${Config.serverUrl}/thermo/${name}`)
+      .then((response) => {
+        dispatch({type: 'FETCH_TEMP_FULLFILLED', payload: response.data})
+      })
+      .catch((err) => {
+        dispatch({type: 'FETCH_TEMP_REJECTED', payload: err})
+      })
   }
+
+  // return {
+  //   type: 'FETCH_TEMP_FULLFILLED',
+  //   payload: {
+  //     val: 22
+  //   }
+  // }
 }
 
 export function setTempVal (val) {
