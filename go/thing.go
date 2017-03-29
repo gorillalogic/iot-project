@@ -27,7 +27,7 @@ func getThingShadow(thingName string) ([]byte, error) {
 
 }
 
-func updateThingShadow(thingName string, payload []byte) []byte {
+func updateThingShadow(thingName string, payload []byte) ([]byte, error) {
 
 	//TODO: make iodataplane a singleton
 	svc := iotdataplane.New(session.New(), &aws.Config{Region: aws.String("us-west-2"), Endpoint: aws.String("https://a276znh1wuhoiz.iot.us-west-2.amazonaws.com")})
@@ -36,12 +36,11 @@ func updateThingShadow(thingName string, payload []byte) []byte {
 		ThingName: aws.String(thingName), // Required
 	}
 	resp, err := svc.UpdateThingShadow(params)
-	check(err)
 
-	//if err != nil {
-	//return err
-	//}
-	return resp.Payload
+	if err != nil {
+		return nil, err
+	}
+	return resp.Payload, nil
 
 }
 
@@ -93,6 +92,7 @@ func (fan *Fan) publish(context *gin.Context) {
 func (fan *Fan) status(context *gin.Context) {
 
 	var f interface{}
+	var r_state bool
 	fan.name = context.Param("name")
 	if fan.name == "" {
 		context.JSON(422, gin.H{
@@ -101,18 +101,31 @@ func (fan *Fan) status(context *gin.Context) {
 	} else {
 		payload, err := getThingShadow(fan.name)
 		if err != nil {
+			context.JSON(http.StatusOK, gin.H{
+				"status": "No thing with that name",
+			})
 
+		} else {
 			err := json.Unmarshal(payload, &f)
 			check(err)
 			json_map := f.(map[string]interface{})
 			state := json_map["state"]
 			desired := state.(map[string]interface{})["desired"]
 			onoff := desired.(map[string]interface{})["fan"]
+
+			if onoff == 1 {
+				r_state = true
+
+			} else {
+				r_state = false
+
+			}
+
 			fmt.Println(onoff)
 
 			context.JSON(http.StatusOK, gin.H{
 				"name":   fan.name,
-				"status": onoff,
+				"status": r_state,
 			})
 
 		}
@@ -192,12 +205,19 @@ func (t *Thermo) publish(context *gin.Context) {
 				},
 			}
 			s, _ := json.Marshal(shadow)
-			updateThingShadow(t.name, s)
-			context.JSON(http.StatusOK, gin.H{
-				"name":     t.name,
-				"min_temp": payload.Min,
-				"max_temp": payload.Max,
-			})
+			_, err := updateThingShadow(t.name, s)
+			if err != nil {
+
+				check(err)
+
+			} else {
+				context.JSON(http.StatusOK, gin.H{
+					"name":     t.name,
+					"min_temp": payload.Min,
+					"max_temp": payload.Max,
+				})
+
+			}
 
 		} else {
 			fmt.Println("error")
