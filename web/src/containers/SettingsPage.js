@@ -62,11 +62,6 @@ export default class SettingsPage extends React.Component {
           this.handleFan(this.props.temp.val)
           this.props.dispatch(addTempHistory({'name': '', 'temp': this.props.temp.val}))
         })
-
-      //  const changingTemp = Math.floor(Math.random() * (17 - 27)) + 27
-      // this.props.dispatch(setTempVal(changingTemp))
-      // this.handleFan(changingTemp)
-      // this.props.dispatch(addTempHistory({'name': '', 'temp': changingTemp}))
     }, 10000);
 
   }
