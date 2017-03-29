@@ -92,6 +92,7 @@ func (fan *Fan) publish(context *gin.Context) {
 func (fan *Fan) status(context *gin.Context) {
 
 	var f interface{}
+	var r_state bool
 	fan.name = context.Param("name")
 	if fan.name == "" {
 		context.JSON(422, gin.H{
@@ -111,11 +112,20 @@ func (fan *Fan) status(context *gin.Context) {
 			state := json_map["state"]
 			desired := state.(map[string]interface{})["desired"]
 			onoff := desired.(map[string]interface{})["fan"]
+
+			if onoff == 1 {
+				r_state = true
+
+			} else {
+				r_state = false
+
+			}
+
 			fmt.Println(onoff)
 
 			context.JSON(http.StatusOK, gin.H{
 				"name":   fan.name,
-				"status": onoff,
+				"status": r_state,
 			})
 
 		}
@@ -144,7 +154,7 @@ func (t *Thermo) status(context *gin.Context) {
 	} else {
 
 		payload, err := getThingShadow(t.name)
-		if err == nil {
+		if err != nil {
 			context.JSON(http.StatusOK, gin.H{
 				"status": "No thing with that name",
 			})
