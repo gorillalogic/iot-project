@@ -23,7 +23,7 @@ export default function reducer (state = defaultValues, action) {
         requested: true,
         fan: {
           ...state.fan,
-          val: (action.payload.status == 0) ? false : true,
+          val: action.payload.status,
           name: action.payload.name
         }
       }

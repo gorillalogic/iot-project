@@ -59,7 +59,7 @@ export default class SettingsPage extends React.Component {
       const changingTemp = Math.floor(Math.random() * (17 - 27)) + 27
       this.props.dispatch(setTempVal(changingTemp))
       this.handleFan(changingTemp)
-      this.props.dispatch(addTempHistory({'pv': changingTemp}))
+      this.props.dispatch(addTempHistory({'name': '', 'temp': changingTemp}))
     }, 10000);
 
   }
@@ -99,7 +99,8 @@ export default class SettingsPage extends React.Component {
   handleFanToggle (e, isInputChecked) {
     const val = !this.props.fan.val
     this.props.dispatch(setFanVal(val))
-    this.props.dispatch(putFanVal(val, this.props.fan.name))
+    //this.props.dispatch(putFanVal(val, this.props.fan.name))
+    this.props.dispatch(putFanVal(val, 'Fan1'))
   }
 
   handleFanOverride (e, isInputChecked) {
@@ -118,10 +119,10 @@ export default class SettingsPage extends React.Component {
     if (!this.props.fan.override && tempMax) {
       if (tempVal > tempMax) {
         this.props.dispatch(setFanVal(true))
-        // this.props.dispatch(putFanVal(true, this.props.fan.name))
+        this.props.dispatch(putFanVal(true, this.props.fan.name))
       } else if (tempVal < tempMax) {
         this.props.dispatch(setFanVal(false))
-        // this.props.dispatch(putFanVal(false, this.props.fan.name))
+        this.props.dispatch(putFanVal(false, this.props.fan.name))
       }
     }
   }

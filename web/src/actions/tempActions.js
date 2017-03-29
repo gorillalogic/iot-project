@@ -1,5 +1,3 @@
-// How to use:
-// import { fetchUserName } from '../userActions'
 import axios from 'axios'
 const Config = require('Config')
 

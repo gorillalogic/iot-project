@@ -2,7 +2,7 @@
 import React, {PropTypes} from 'react'
 import Paper from 'material-ui/Paper'
 import {white, purple600, purple500} from 'material-ui/styles/colors'
-import {LineChart, Line, ResponsiveContainer} from 'recharts'
+import {LineChart, Line, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts'
 import {typography} from 'material-ui/styles'
 
 const RealTimeStats = (props) => {
@@ -30,7 +30,9 @@ const RealTimeStats = (props) => {
       <div style={styles.div}>
         <ResponsiveContainer >
           <LineChart data={props.data}>
-            <Line type='monotone' dataKey='pv' stroke='#8884d8' strokeWidth={2} />
+            <Line type='monotone' dataKey='temp' stroke='#8884d8' strokeWidth={2} />
+            <Tooltip />
+            <XAxis dataKey="name" hide={true}/>
           </LineChart>
         </ResponsiveContainer>
       </div>
