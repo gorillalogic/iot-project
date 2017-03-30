@@ -61,13 +61,16 @@ type FanSetup struct {
 func (fan *Fan) publish(context *gin.Context) {
 	var payload FanSetup
 	var state int
+	var r_state bool
 
 	if context.BindJSON(&payload) == nil {
 
 		if payload.State {
 			state = 1
+			r_state = true
 		} else {
 			state = 0
+			r_state = false
 		}
 
 		shadow := map[string]interface{}{
@@ -81,7 +84,7 @@ func (fan *Fan) publish(context *gin.Context) {
 		updateThingShadow(fan.name, s)
 		context.JSON(http.StatusOK, gin.H{
 			"name":   fan.name,
-			"status": payload.State,
+			"status": r_state,
 		})
 
 	} else {
@@ -93,6 +96,7 @@ func (fan *Fan) publish(context *gin.Context) {
 func (fan *Fan) status(context *gin.Context) {
 
 	var f interface{}
+	var r_state bool
 	fan.name = context.Param("name")
 	if fan.name == "" {
 		context.JSON(422, gin.H{
@@ -100,7 +104,7 @@ func (fan *Fan) status(context *gin.Context) {
 		})
 	} else {
 		payload, err := getThingShadow(fan.name)
-		if err != nil {
+		if err == nil {
 
 			err := json.Unmarshal(payload, &f)
 			check(err)
@@ -109,6 +113,12 @@ func (fan *Fan) status(context *gin.Context) {
 			desired := state.(map[string]interface{})["desired"]
 			onoff := desired.(map[string]interface{})["fan"]
 			fmt.Println(onoff)
+			if onoff == 1 {
+				r_state = true
+			} else {
+				r_state = false
+
+			}
 
 			context.JSON(http.StatusOK, gin.H{
 				"name":   fan.name,
@@ -153,8 +163,9 @@ func (t *Thermo) status(context *gin.Context) {
 			state := json_map["state"]
 			reported := state.(map[string]interface{})["reported"]
 			current_temp := reported.(map[string]interface{})["current"]
-			min_temp := reported.(map[string]interface{})["min_temp"]
-			max_temp := reported.(map[string]interface{})["max_temp"]
+			delta := state.(map[string]interface{})["delta"]
+			min_temp := delta.(map[string]interface{})["min_temp"]
+			max_temp := delta.(map[string]interface{})["max_temp"]
 
 			context.JSON(http.StatusOK, gin.H{
 				"name":         t.name,
