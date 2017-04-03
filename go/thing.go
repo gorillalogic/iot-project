@@ -162,16 +162,16 @@ func (t *Thermo) status(context *gin.Context) {
 			json_map := f.(map[string]interface{})
 			state := json_map["state"]
 			reported := state.(map[string]interface{})["reported"]
-			current_temp := reported.(map[string]interface{})["current"]
+			current_temp := reported.(map[string]interface{})["temperature"]
 			delta := state.(map[string]interface{})["delta"]
 			min_temp := delta.(map[string]interface{})["min_temp"]
 			max_temp := delta.(map[string]interface{})["max_temp"]
 
 			context.JSON(http.StatusOK, gin.H{
-				"name":         t.name,
-				"current_temp": current_temp,
-				"min_temp":     min_temp,
-				"max_temp":     max_temp,
+				"name":        t.name,
+				"temperature": current_temp,
+				"min_temp":    min_temp,
+				"max_temp":    max_temp,
 			})
 
 		}
