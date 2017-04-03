@@ -59,7 +59,7 @@ export default class SettingsPage extends React.Component {
       this.props.dispatch(fetchTemp(this.props.temp.name))
         .then(() => {
           this.props.dispatch(setTempVal(this.props.temp.val))
-          this.handleFan(this.props.temp.val)
+          this.handleFan()
           this.props.dispatch(addTempHistory({'name': '', 'temp': this.props.temp.val}))
         })
     }, 10000);
