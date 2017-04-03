@@ -56,10 +56,17 @@ export default class SettingsPage extends React.Component {
     this.props.dispatch(fetchFan(this.props.fan.name))
 
     setInterval(() => {
-      const changingTemp = Math.floor(Math.random() * (17 - 27)) + 27
-      this.props.dispatch(setTempVal(changingTemp))
-      this.handleFan(changingTemp)
-      this.props.dispatch(addTempHistory({'name': '', 'temp': changingTemp}))
+      this.props.dispatch(fetchTemp(this.props.temp.name))
+        .then(() => {
+          this.props.dispatch(setTempVal(this.props.temp.val))
+          this.handleFan(this.props.temp.val)
+          this.props.dispatch(addTempHistory({'name': '', 'temp': this.props.temp.val}))
+        })
+
+      //  const changingTemp = Math.floor(Math.random() * (17 - 27)) + 27
+      // this.props.dispatch(setTempVal(changingTemp))
+      // this.handleFan(changingTemp)
+      // this.props.dispatch(addTempHistory({'name': '', 'temp': changingTemp}))
     }, 10000);
 
   }

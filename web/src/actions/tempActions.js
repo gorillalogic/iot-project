@@ -11,6 +11,8 @@ export function fetchTemp (name) {
       .catch((err) => {
         dispatch({type: 'FETCH_TEMP_REJECTED', payload: err})
       })
+
+      return Promise.resolve()
   }
 
   // return {
