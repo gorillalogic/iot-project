@@ -122,7 +122,7 @@ func (fan *Fan) status(context *gin.Context) {
 
 			context.JSON(http.StatusOK, gin.H{
 				"name":   fan.name,
-				"status": onoff,
+				"status": r_state,
 			})
 
 		}
