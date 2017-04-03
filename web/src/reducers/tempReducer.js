@@ -27,7 +27,7 @@ export default function reducer (state = defaultValues, action) {
         requested: true,
         temp: {
           ...state.temp,
-          val: action.payload.current_temp,
+          val: action.payload.temperature,
           min: action.payload.min_temp,
           max: action.payload.max_temp
         }
