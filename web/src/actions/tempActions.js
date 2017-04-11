@@ -45,22 +45,22 @@ export function setTempMinError (min) {
 }
 
 export function putTempMin (min, name) {
-  // return (dispatch) => {
-  //   axios.put(`${Config.serverUrl}/thermo/${name}`, {
-  //     'min': min
-  //   })
-  //   .then((response) => {
-  //      dispatch({type: 'POST_TEMP_MIN', payload: min)
-  //   })
-  //   .catch((err) => {
-  //
-  //   })
-  // }
-
-  return {
-    type: 'POST_TEMP_MIN',
-    payload: min
+  return (dispatch) => {
+    axios.put(`${Config.serverUrl}/thermo/${name}`, {
+      'min_temp': min
+    })
+    .then((response) => {
+       dispatch({type: 'PUT_TEMP_THRESHOLD', payload: min})
+    })
+    .catch((err) => {
+      dispatch({type: 'PUT_TEMP_THRESHOLD_REJECTED', payload: err})
+    })
   }
+
+  // return {
+  //   type: 'POST_TEMP_MIN',
+  //   payload: min
+  // }
 }
 
 export function setTempMax (max) {
@@ -78,21 +78,21 @@ export function setTempMaxError (max) {
 }
 
 export function putTempMax (max, name) {
-  // return (dispatch) => {
-  //   axios.put(`${Config.serverUrl}/thermo/${name}`, {
-  //     'max': max
-  //   })
-  //   .then((response) => {
-  //      dispatch({type: 'POST_TEMP_MAX', payload: max)
-  //   })
-  //   .catch((err) => {
-  //
-  //   })
-  // }
-  return {
-    type: 'POST_TEMP_MAX',
-    payload: max
+  return (dispatch) => {
+    axios.put(`${Config.serverUrl}/thermo/${name}`, {
+      'max_temp': max
+    })
+    .then((response) => {
+      dispatch({type: 'PUT_TEMP_THRESHOLD', payload: max})
+    })
+    .catch((err) => {
+      dispatch({type: 'PUT_TEMP_THRESHOLD_REJECTED', payload: err})
+    })
   }
+  // return {
+  //   type: 'POST_TEMP_MAX',
+  //   payload: max
+  // }
 }
 
 export function resetTempVal () {

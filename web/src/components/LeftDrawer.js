@@ -55,7 +55,7 @@ const LeftDrawer = (props) => {
           IoT
         </div>
       <div style={styles.avatar.div}>
-        <Avatar src='https://pbs.twimg.com/profile_images/540934751180189696/BKN_X52u.png'
+        <Avatar src='https://pbs.twimg.com/profile_images/849666912325738497/aAWtgVC-_200x200.jpg'
           size={50}
           style={styles.avatar.icon} />
         <span style={styles.avatar.span}>{props.username}</span>
