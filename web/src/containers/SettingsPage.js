@@ -72,6 +72,9 @@ export default class SettingsPage extends React.Component {
 
     if (this.validateTresholds({min})) {
       this.putTempMin(parseFloat(min), this.props.temp.name)
+
+      // just for good measure
+      this.putTempMax(parseFloat(this.props.temp.max), this.props.temp.name)
     }
 
     this.handleFan()
@@ -82,6 +85,9 @@ export default class SettingsPage extends React.Component {
     this.setTempMax(max)
 
     if (this.validateTresholds({max})) {
+      // just for good measure
+      this.putTempMin(parseFloat(this.props.temp.min), this.props.temp.name)
+
       this.putTempMax(parseFloat(max), this.props.temp.name)
     }
 
@@ -90,12 +96,16 @@ export default class SettingsPage extends React.Component {
 
   setTempMin (min) {
     this.props.dispatch(setTempMin(min))
-    this.validateTresholds()
+    if (this.validateTresholds()) {
+      this.props.dispatch(putTempMin(min, this.props.temp.name))
+    }
   }
 
   setTempMax (max) {
     this.props.dispatch(setTempMax(max))
-    this.validateTresholds()
+    if (this.validateTresholds()) {
+      this.props.dispatch(putTempMax(max, this.props.temp.name))
+    }
   }
 
   handleFanToggle (e, isInputChecked) {
