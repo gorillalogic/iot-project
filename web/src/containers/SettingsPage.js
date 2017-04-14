@@ -84,7 +84,7 @@ export default class SettingsPage extends React.Component {
     const max = e.target.value
     this.setTempMax(max)
 
-    if (this.validateThresholds({max})) {
+    if (this.validateTresholds({max})) {
       // just for good measure
       this.putTempMin(parseFloat(this.props.temp.min), this.props.temp.name)
 
