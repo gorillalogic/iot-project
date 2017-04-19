@@ -50,7 +50,7 @@ export function putTempMin (min, name) {
       'min_temp': min
     })
     .then((response) => {
-       dispatch({type: 'POST_TEMP_MIN', payload: min})
+       dispatch({type: 'PUT_TEMP_THRESHOLD', payload: min})
     })
     .catch((err) => {
       dispatch({type: 'PUT_TEMP_THRESHOLD_REJECTED', payload: err})
@@ -83,7 +83,7 @@ export function putTempMax (max, name) {
       'max_temp': max
     })
     .then((response) => {
-      dispatch({type: 'POST_TEMP_MAX', payload: max})
+      dispatch({type: 'PUT_TEMP_THRESHOLD', payload: max})
     })
     .catch((err) => {
       dispatch({type: 'PUT_TEMP_THRESHOLD_REJECTED', payload: err})

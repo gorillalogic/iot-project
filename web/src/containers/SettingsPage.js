@@ -32,7 +32,7 @@ import PageBase from '../components/PageBase'
 import Data from '../data'
 
 import {fetchTemp, setTempVal, setTempMin, setTempMax,
-  setTempMinError, setTempMaxError, putTempMin, postTempMax, addTempHistory, resetTempVal} from '../actions/tempActions'
+  setTempMinError, setTempMaxError, putTempMin, putTempMax, addTempHistory, resetTempVal} from '../actions/tempActions'
 import {fetchFan, setFanVal, getFanOverride, setFanOverride, putFanVal, resetFanVal} from '../actions/fanActions'
 
 @connect((store) => {
@@ -70,7 +70,7 @@ export default class SettingsPage extends React.Component {
     const min = e.target.value
     this.setTempMin(min)
 
-    if (this.validateTresholds({min})) {
+    if (this.validateThresholds({min})) {
       this.putTempMin(parseFloat(min), this.props.temp.name)
 
       // just for good measure
@@ -96,14 +96,14 @@ export default class SettingsPage extends React.Component {
 
   setTempMin (min) {
     this.props.dispatch(setTempMin(min))
-    if (this.validateTresholds()) {
+    if (this.validateThresholds()) {
       this.props.dispatch(putTempMin(min, this.props.temp.name))
     }
   }
 
   setTempMax (max) {
     this.props.dispatch(setTempMax(max))
-    if (this.validateTresholds()) {
+    if (this.validateThresholds()) {
       this.props.dispatch(putTempMax(max, this.props.temp.name))
     }
   }
@@ -138,7 +138,7 @@ export default class SettingsPage extends React.Component {
     }
   }
 
-  validateTresholds (threshold = {}) {
+  validateThresholds (threshold = {}) {
     let valid = true
     const tempMax = threshold.max ? parseFloat(threshold.max) : parseFloat(this.props.temp.max)
     const tempMin = threshold.min ? parseFloat(threshold.min) : parseFloat(this.props.temp.min)
