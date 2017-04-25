@@ -12,7 +12,7 @@ export function fetchTemp (name) {
         dispatch({type: 'FETCH_TEMP_REJECTED', payload: err})
       })
 
-      return Promise.resolve()
+    return Promise.resolve()
   }
 
   // return {
@@ -50,7 +50,7 @@ export function putTempMin (min, name) {
       'min_temp': min
     })
     .then((response) => {
-       dispatch({type: 'PUT_TEMP_THRESHOLD', payload: min})
+      dispatch({type: 'PUT_TEMP_THRESHOLD', payload: min})
     })
     .catch((err) => {
       dispatch({type: 'PUT_TEMP_THRESHOLD_REJECTED', payload: err})

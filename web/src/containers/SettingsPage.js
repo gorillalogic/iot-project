@@ -47,8 +47,6 @@ import {fetchFan, setFanVal, getFanOverride, setFanOverride, putFanVal, resetFan
 export default class SettingsPage extends React.Component {
   constructor () {
     super()
-    this.putTempMin = debounce(this.setTempMin, 600)
-    this.putTempMax = debounce(this.setTempMax, 600)
   }
 
   componentWillMount () {
@@ -69,13 +67,14 @@ export default class SettingsPage extends React.Component {
   handleTempMinChange (e) {
     const min = e.target.value
     this.setTempMin(min)
+    this.validateThresholds({min})
 
-    if (this.validateThresholds({min})) {
-      this.putTempMin(parseFloat(min), this.props.temp.name)
-
-      // just for good measure
-      this.putTempMax(parseFloat(this.props.temp.max), this.props.temp.name)
-    }
+    // if (this.validateThresholds({min})) {
+    //   this.putTempMin(parseFloat(min), this.props.temp.name)
+    //
+    //   // just for good measure
+    //   // this.putTempMax(parseFloat(this.props.temp.max), this.props.temp.name)
+    // }
 
     this.handleFan()
   }
@@ -83,13 +82,14 @@ export default class SettingsPage extends React.Component {
   handleTempMaxChange (e) {
     const max = e.target.value
     this.setTempMax(max)
+    this.validateThresholds({max})
 
-    if (this.validateTresholds({max})) {
-      // just for good measure
-      this.putTempMin(parseFloat(this.props.temp.min), this.props.temp.name)
-
-      this.putTempMax(parseFloat(max), this.props.temp.name)
-    }
+    // if (this.validateThresholds({max})) {
+    //   // just for good measure
+    //   // this.putTempMin(parseFloat(this.props.temp.min), this.props.temp.name)
+    //
+    //   this.putTempMax(parseFloat(max), this.props.temp.name)
+    // }
 
     this.handleFan(max)
   }
@@ -97,16 +97,24 @@ export default class SettingsPage extends React.Component {
   setTempMin (min) {
     this.props.dispatch(setTempMin(min))
     if (this.validateThresholds()) {
-      this.props.dispatch(putTempMin(min, this.props.temp.name))
+      this.updateTempMin(min)
     }
   }
+
+  updateTempMin = debounce(min => {
+    this.props.dispatch(putTempMin(parseFloat(min), this.props.temp.name))
+  }, 600)
 
   setTempMax (max) {
     this.props.dispatch(setTempMax(max))
     if (this.validateThresholds()) {
-      this.props.dispatch(putTempMax(max, this.props.temp.name))
+      this.updateTempMax(max)
     }
   }
+
+  updateTempMax = debounce(max => {
+    this.props.dispatch(putTempMax(parseFloat(max), this.props.temp.name))
+  }, 600)
 
   handleFanToggle (e, isInputChecked) {
     const val = !this.props.fan.val
