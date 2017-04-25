@@ -39,6 +39,7 @@ export function putFanVal (val, name) {
   return (dispatch) => {
     dispatch({type: 'PUT_FAN_VAL'})
     axios.put(`${Config.serverUrl}/fan/${name}`, {
+      'override': true,
       'state': val
     })
     .then((response) => {
