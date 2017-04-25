@@ -11,7 +11,6 @@ import (
 )
 
 func getThingShadow(thingName string) ([]byte, error) {
-
 	//TODO: make iodataplane a singleton
 	svc := iotdataplane.New(session.New(), &aws.Config{Region: aws.String("us-west-2"), Endpoint: aws.String("https://a276znh1wuhoiz.iot.us-west-2.amazonaws.com")})
 
@@ -196,6 +195,7 @@ func (t *Thermo) status(context *gin.Context) {
 func (t *Thermo) publish(context *gin.Context) {
 
 	var payload ThermoSetup
+	var shadow interface{}
 	t.name = context.Param("name")
 
 	if t.name == "" {
@@ -207,14 +207,37 @@ func (t *Thermo) publish(context *gin.Context) {
 
 		if context.BindJSON(&payload) == nil {
 
-			shadow := map[string]interface{}{
-				"state": map[string]interface{}{
-					"desired": map[string]float64{
-						"min_temp": payload.Min,
-						"max_temp": payload.Max,
+			switch {
+			case payload.Min != 0 && payload.Max != 0:
+				shadow = map[string]interface{}{
+					"state": map[string]interface{}{
+						"desired": map[string]float64{
+							"min_temp": payload.Min,
+							"max_temp": payload.Max,
+						},
 					},
-				},
+				}
+			case payload.Min == 0 && payload.Max != 0:
+				shadow = map[string]interface{}{
+					"state": map[string]interface{}{
+						"desired": map[string]float64{
+							"min_temp": payload.Min,
+						},
+					},
+				}
+			case payload.Min != 0 && payload.Max == 0:
+				shadow = map[string]interface{}{
+					"state": map[string]interface{}{
+						"desired": map[string]float64{
+							"min_temp": payload.Min,
+						},
+					},
+				}
+			default:
+				fmt.Println("something weird happened")
+
 			}
+
 			s, _ := json.Marshal(shadow)
 			_, err := updateThingShadow(t.name, s)
 			if err != nil {

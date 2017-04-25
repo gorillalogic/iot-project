@@ -77,13 +77,35 @@ void msg_callback_delta(char* src, unsigned int len, Message_status_t flag) {
 
 void reportTemp(){
     char JSON_buf[50];
+    char temp_buf[100];
+    float temp=readTemp();
     String payload = "{\"state\":{\"reported\":";
     payload += "{\"temperature\":";
-    payload += String(readTemp());
+    payload += String(temp);
     payload += "}}}";
     payload.toCharArray(JSON_buf,50);
 
-  print_log("reporting temperature", myClient.shadow_update(AWS_IOT_MY_THING_NAME, JSON_buf, strlen(JSON_buf), NULL, 5));
+    String temperature_payload= "{\"client_id\":";
+    temperature_payload += String(AWS_IOT_CLIENT_ID);
+    temperature_payload += ",\"temp\":";    
+    temperature_payload += String(temp);
+    temperature_payload += ",\"min_temp\":";    
+    temperature_payload += String(min_temp);
+    temperature_payload += ",\"max_temp\":";
+    temperature_payload += String(max_temp);
+    temperature_payload += "}";
+    temperature_payload.toCharArray(temp_buf,100);
+    
+    if((rc = myClient.publish("temp", temp_buf, strlen(temp_buf), 1, false)) != 0) {
+      Serial.println(F("Publish failed!"));
+      Serial.println(rc);
+    }
+    
+    
+
+     print_log("reporting temperature", myClient.shadow_update(AWS_IOT_MY_THING_NAME, JSON_buf, strlen(JSON_buf), NULL, 5));
+     delay(5000);
+  
 }
 
 void setup() {
