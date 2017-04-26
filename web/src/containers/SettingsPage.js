@@ -138,10 +138,10 @@ export default class SettingsPage extends React.Component {
     if (!this.props.fan.override && tempMax) {
       if (tempVal > tempMax) {
         this.props.dispatch(setFanVal(true))
-        // this.props.dispatch(putFanVal(true, this.props.fan.name))
+        this.props.dispatch(putFanVal(true, this.props.fan.name))
       } else if (tempVal < tempMax) {
         this.props.dispatch(setFanVal(false))
-        // this.props.dispatch(putFanVal(false, this.props.fan.name))
+        this.props.dispatch(putFanVal(false, this.props.fan.name))
       }
     }
   }
